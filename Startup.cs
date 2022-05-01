@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using BenthanysPieShop.Models;
 
 namespace BenthanysPieShop  
 {
@@ -16,8 +17,9 @@ namespace BenthanysPieShop
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            // register services here through Dependency injection as dot core using a simple built dependency injection
-
+            services.AddScoped<IPieRepository, MockPieRepository>();
+            services.AddScoped<ICategoryRepository, MockCategoryRepository>();
+             
             services.AddControllersWithViews();
         }
 
