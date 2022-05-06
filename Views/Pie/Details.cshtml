@@ -13,4 +13,12 @@
         <h4>@Model.ShortDescription</h4>
         <h4>@Model.LongDescription</h4>
     </div>
+    <div class="addToCart">
+        <p class="button">
+            <a class="btn btn-primary"
+               asp-controller="ShoppingCart"
+               asp-action="AddToShoppingCart"
+               asp-route-pieId="@Model.PieId">Add To cart</a>
+        </p>
+    </div>
 </div>

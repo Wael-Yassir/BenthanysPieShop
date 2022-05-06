@@ -31,9 +31,17 @@ namespace BenthanysPieShop
 
             services.AddScoped<IPieRepository, PieRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
-            //services.AddScoped<IPieRepository, MockPieRepository>();
-            //services.AddScoped<ICategoryRepository, MockCategoryRepository>();
 
+            /*
+             This line will check the if the current session have any shop cart assigned with it And if not will
+             created a new shop cart and assinged it to the current session, and insure that the shopping cart
+             will be always associated with the request. and as it's scoped there will only be one shop cart 
+             during handling with the request.
+            */
+            services.AddScoped<ShoppingCart>(sp => ShoppingCart.GetCart(sp));
+
+            services.AddHttpContextAccessor();
+            services.AddSession();
             services.AddControllersWithViews();
         }
 
@@ -47,6 +55,7 @@ namespace BenthanysPieShop
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseSession();
 
             app.UseRouting();
 
