@@ -1,9 +1,11 @@
 ﻿using System.Linq;
 using BenthanysPieShop.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BenthanysPieShop.Controllers
 {
+    [Authorize]
     public class OrderController : Controller
     {
         public IOrderRepository _orderRepository { get; set; }
@@ -44,7 +46,7 @@ namespace BenthanysPieShop.Controllers
         public IActionResult CheckoutComplete()
         {
             ViewBag.CheckoutCompleteMessage = "Thanks for your order, You will soon enjoy our delicious pies!";
-            
+
             return View();
         }
     }
