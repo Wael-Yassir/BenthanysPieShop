@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using BenthanysPieShop.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Identity;
 
 namespace BenthanysPieShop
 {
@@ -30,6 +31,9 @@ namespace BenthanysPieShop
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            // Add the basic functunality for working with Identity, and store the data using EF at DB.
+            services.AddDefaultIdentity<IdentityUser>().AddEntityFrameworkStores<AppDbContext>();
+
             services.AddScoped<IPieRepository, PieRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
@@ -45,6 +49,7 @@ namespace BenthanysPieShop
             services.AddHttpContextAccessor();
             services.AddSession();
             services.AddControllersWithViews();
+            services.AddRazorPages();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,14 +63,17 @@ namespace BenthanysPieShop
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSession();
-
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id:int?}");
+
+                endpoints.MapRazorPages();
             });
         }
     }
