@@ -19,6 +19,8 @@ namespace BenthanysPieShop.Models
 
             _appDbContext.Orders.Add(order);
 
+            //_appDbContext.SaveChanges();
+
             var shoppingCartItems = _shoppingCart.ShoppingCartItems;
 
             foreach (var shoppingCartItem in shoppingCartItems)
