@@ -19,8 +19,6 @@ namespace BenthanysPieShop.Models
 
             _appDbContext.Orders.Add(order);
 
-            //_appDbContext.SaveChanges();
-
             var shoppingCartItems = _shoppingCart.ShoppingCartItems;
 
             foreach (var shoppingCartItem in shoppingCartItems)
@@ -29,7 +27,7 @@ namespace BenthanysPieShop.Models
                 {
                     Amount = shoppingCartItem.Amount,
                     PieId = shoppingCartItem.Pie.PieId,
-                    OrderId = order.OrderId,
+                    Order = order,
                     Price = shoppingCartItem.Pie.Price
                 };
 
@@ -37,6 +35,43 @@ namespace BenthanysPieShop.Models
             }
 
             _appDbContext.SaveChanges();
+        }
+
+        // Using transaction to solve saving entity problem.
+        private void _CreateOrder(Order order)
+        {
+            order.OrderPlaced = DateTime.Now;
+
+            using (var transaction = _appDbContext.Database.BeginTransaction())
+            {
+                try
+                {
+                    var shoppingCartItems = _shoppingCart.ShoppingCartItems;
+                    _appDbContext.Orders.Add(order);
+                    _appDbContext.SaveChanges();
+
+                    foreach (var shoppingCartItem in shoppingCartItems)
+                    {
+                        var orderDetail = new OrderDetail
+                        {
+                            Amount = shoppingCartItem.Amount,
+                            PieId = shoppingCartItem.Pie.PieId,
+                            Order = order,
+                            Price = shoppingCartItem.Pie.Price
+                        };
+
+                        _appDbContext.OrderDetails.Add(orderDetail);
+                    }
+
+                    _appDbContext.SaveChanges();
+
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                }
+            }
         }
     }
 }
